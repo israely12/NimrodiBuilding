@@ -1,5 +1,6 @@
-import { createSlice} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction} from '@reduxjs/toolkit';
 import Floor from '../pages/Floor/Floor';
+import { act } from 'react';
 
  export interface Floor{
     name: string;
@@ -27,7 +28,7 @@ import Floor from '../pages/Floor/Floor';
     purpose: "Dining Room",
     description: "The dining room where soldiers gather to eat and socialize. This space has a kitchen and a dining area with enough seating for the building’s personnel.",
     activity: "eat and socialize",
-    isAuth: false
+    isAuth: true
 
   }
   const floor3 = {
@@ -62,15 +63,16 @@ const floorSlice = createSlice({
   name: 'floors',
   initialState,
   reducers: {
-    changeAccess: (state, action) => {
-        const floor = state.find((floor) => floor.purpose === action.payload.floorName);
-        const index = state.findIndex((floor) => floor.purpose === action.payload.floorName);
-        if (floor) {
-            for (let i = 0; i < index; i++) {
-                state[i].isAuth = true;
-            }              
-            }
-  
+    changeAccess: (state, action:PayloadAction< number>) => {
+      console.log(action.payload);
+      
+      const floorIndex = action.payload;
+      console.log(floorIndex);
+      
+      if (floorIndex >= 0 && floorIndex < state.length) {
+        state[floorIndex].isAuth = !state[floorIndex].isAuth;
+        
+      }
     },
   },
 });

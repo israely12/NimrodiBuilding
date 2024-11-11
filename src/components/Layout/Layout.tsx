@@ -1,32 +1,37 @@
 import React, { ReactNode } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import useBuildingData from "../../utils/BuildingDataProvider";
-import  {RootState } from "@reduxjs/toolkit/query";
+import  {RootState } from "../../store/store";
+import { changeAccess } from "../../store/floorreducer";
 import "./Layout.css";
 
-const Layout: React.FC<{children:ReactNode}> = ({children}) => {
-  // const floorAccess = useSelector((state: RootState) => state.role);
-  // const floorAccess = useSelector(
-  //   (state: {
-  //     floorAccess: {
-  //       floorAccess: [boolean, boolean, boolean, boolean, boolean];
-  //     };
-  //   }) => state.floorAccess.floorAccess
-  // );
-    
-    const { getFloorByIndex } = useBuildingData();
+const Layout: React.FC<{children: ReactNode}> = ({children}) => {
+  const dispatch = useDispatch();
+  const floorAccess = useSelector((state: RootState) => state.floors); 
+   
+  const {getFloorByIndex}  = useBuildingData();
+
+  const handleAccessChange = (floorName: string) => {
+    dispatch(changeAccess({ floorName }));
+  };
 
   return (
     <div className="layout-page">
       <nav className="navbar">
         <h1>מגדל נמרודי</h1>
         <div className="nav-links">
-            <Link to="/">Home</Link>
-          {floorAccess.map((_: boolean, index: number) => (
-            <Link key={index} to={`/floor/${index}`}>
-              {getFloorByIndex(index)?.purpose || `Floor ${index + 1}`}
-            </Link>
+          <Link to="/">Home</Link>
+          {floorAccess.map((floor, index) => (
+         (
+              <Link 
+                key={index} 
+                to={`/floor/${index}`} 
+                onClick={() => handleAccessChange(floor.purpose)} 
+              >
+                {getFloorByIndex(index)?.purpose || `Floor ${index + 1}`}
+              </Link>
+            ) 
           ))}
         </div>
       </nav>

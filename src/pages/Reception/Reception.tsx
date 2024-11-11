@@ -1,25 +1,28 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeAccess } from "../../store/floorreducer";
-import { setRole } from "../../store/rolereducer";
+import  {setRole } from "../../store/rolereducer";
 import useBuildingData from "../../utils/BuildingDataProvider";
 import optionalroles from "../../data/roles.json";
 import "./Reception.css";
 
 const Reception: React.FC = () => {
   const floorAccess = useSelector(
-    (state: { floorAccess: { floorAccess: [boolean, boolean, boolean, boolean, boolean] } }) => state.floorAccess.floorAccess
-  );
+    (state: { floors: { id: number; purpose: string; isAuth: boolean }[] }) => state.floors);
   const currentRole = useSelector((state: { role: string }) => state.role);
   const { getFloorByIndex } = useBuildingData();
   const dispatch = useDispatch();
 
   const handleChangeAccess = (index: number) => {
+    console.log(123,index);
+    
     dispatch(changeAccess(index));
+    
   };
 
-  const handleSetRole = (index: number) => {
-    dispatch(setRole(index));
+  const handleSetRole = (role: string) => {
+    dispatch(setRole(role));
+    
   };
 
   return (
@@ -32,17 +35,17 @@ const Reception: React.FC = () => {
 
       <section className="access-levels">
         <h2>Select Access</h2>
-        {floorAccess.map((floor: boolean, index: number) => (
+        {floorAccess.map((floor, index) => (
           <div
-            key={index}
+            key={index}  
             onClick={() => handleChangeAccess(index)}
-            className={`box ${floor ? "blue" : "red"}`}
+            className={`box ${floor.isAuth ? "blue" : "red"}`}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => e.key === "Enter" && handleChangeAccess(index)}
+            onKeyDown={(e) => e.keyCode === 13 && handleChangeAccess(index)}
           >
-            <h5>{floor ? "Access Granted" : "No Access"}</h5>
-            <span>{getFloorByIndex(index)?.purpose || `Floor ${index + 1}`}</span>
+            <h5>{floor.isAuth ? "Access Granted" : "No Access"}</h5>
+            <span>{floor.purpose || `Floor ${index + 1}`}</span>
           </div>
         ))}
       </section>
@@ -52,11 +55,11 @@ const Reception: React.FC = () => {
         {optionalroles.map((role: string, index: number) => (
           <div
             key={index}
-            onClick={() => handleSetRole(index)}
+            onClick={() => handleSetRole(role)}
             className={`box ${role === currentRole ? "blue" : "red"}`}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => e.key === "Enter" && handleSetRole(index)}
+            onKeyPress={(e) => e.key === "Enter" && handleSetRole(role)}
           >
             <h5>{role}</h5>
           </div>

@@ -1,17 +1,18 @@
-import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
+import { useParams, Navigate } from 'react-router-dom';
 
-interface ProtectedRouteProps {
-  children: JSX.Element;
-}
+const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const { index } = useParams<{ index: string }>();
+  const floorIndex = parseInt(index || "0");
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+  const floors = useSelector((state: any) => state.floors); 
+  const thisFloor = floors[floorIndex]; 
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (!thisFloor?.isAuth) {
+    return <Navigate to="/forbidden" />; 
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

@@ -6,20 +6,22 @@ import Layout from "./components/Layout/Layout";
 import Forbidden from "./pages/Forbidden/Forbidden";
 
 
-
 function App() {
   return (
     <div>
+
       <Layout>
-        <Floor/>
-        <Reception/>
+        <Routes>
+          <Route path="/" element={<Reception />} />
+          <Route path="/floor/:index" element={
+            <ProtectedRoute>
+              <Floor /> 
+            </ProtectedRoute>} />
+          <Route path="/forbidden" element={<Forbidden />} />
+        </Routes>
       </Layout>
-      <Routes>
-        <Route path="/" element={} />
-        <Route path="/" element={<Reception/>} />
-      </Routes>
-    </div>
+      </div>
   );
 }
 
-export default App
+export default App;

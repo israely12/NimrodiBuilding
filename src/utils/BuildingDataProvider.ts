@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import data from "../data/building.json";
 
 interface Floor {
   name: string;
@@ -9,26 +10,27 @@ interface Floor {
 }
 
 const useBuildingData = () => {
-  const [buildingData, setBuildingData] = useState<Floor[]>([]);
+  const [buildingData, setBuildingData] = useState<Floor[]>(data);
+  
+  
 
   useEffect(() => {
     let url = "src/data/building.json";
     fetch(url)
         .then(res => res.json())
-        .then(floors => setBuildingData(floors))
+        .then(data => setBuildingData(data))
         console.log(buildingData ,"after");
         
+        
+        
     }, []);
-
-    
-
-
-
 
   const getFloorByIndex = (floorIndex:number): Floor |undefined =>
   {
     
       if(buildingData) {
+        console.log(buildingData[floorIndex]);
+        
       return buildingData[floorIndex];
   };
       
